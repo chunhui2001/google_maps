@@ -119,7 +119,7 @@ pub struct Place {
     ///
     /// See [PlacePhoto](https://developers.google.com/maps/documentation/places/web-service/search-text#PlacePhoto)
     /// for more information.
-    pub photos: Vec<PlacePhoto>,
+    pub photos: Option<Vec<PlacePhoto>>,
 
     /// A textual identifier that uniquely identifies a place. To retrieve
     /// information about the place, pass this identifier in the `place_id`

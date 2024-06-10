@@ -1,6 +1,6 @@
 [package]
 name = "google_maps2"
-version = "3.5.2"
+version = "3.5.3"
 authors = ["keesh.zhang<chunhui2001@gmail.com>"]
 edition = "2021"
 categories = [ "api-bindings" ]
