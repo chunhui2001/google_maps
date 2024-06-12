@@ -18,7 +18,7 @@ impl<'a> Request<'a> {
     /// * `location` ‧ Latitude & longitude of the desired time zone location.
     ///
     /// * `timestamp` ‧ Time is used to determine if Daylight Savings is
-    /// applicable.
+    ///   applicable.
     ///
     /// ## Example
     ///
@@ -39,7 +39,7 @@ impl<'a> Request<'a> {
     pub const fn new(
         client: &GoogleMapsClient,
         location: LatLng,
-        timestamp: DateTime<Utc>,
+        timestamp: DateTime<Utc>
     ) -> Request {
         // Instantiate struct and return it to caller:
         Request {
@@ -68,13 +68,13 @@ impl<'a> Request<'a> {
     /// * `client` ‧ Your application's Google Maps API client struct.
     /// * `coordinate` - `Coord` of the desired time zone location.
     /// * `timestamp` - Time is used to determine if Daylight Savings is
-    /// applicable.
+    ///   applicable.
 
     #[cfg(feature = "geo")]
     pub fn try_new_coordinate<'b>(
         client: &'a GoogleMapsClient,
         coordinate: &'b geo_types::Coord,
-        timestamp: DateTime<Utc>,
+        timestamp: DateTime<Utc>
     ) -> Result<Self, crate::error::Error> {
         // Instantiate struct and return it to caller:
         Ok(Request {
@@ -103,13 +103,13 @@ impl<'a> Request<'a> {
     /// * `client` ‧ Your application's Google Maps API client struct.
     /// * `point` - `Point` of the desired time zone location.
     /// * `timestamp` - Time is used to determine if Daylight Savings is
-    /// applicable.
+    ///   applicable.
 
     #[cfg(feature = "geo")]
     pub fn try_new_point<'b>(
         client: &'a GoogleMapsClient,
         point: &'b geo_types::Point,
-        timestamp: DateTime<Utc>,
+        timestamp: DateTime<Utc>
     ) -> Result<Self, crate::error::Error> {
         // Instantiate struct and return it to caller:
         Ok(Request {

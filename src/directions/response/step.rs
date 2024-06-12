@@ -2,15 +2,18 @@
 //! directions. A step is the most atomic unit of a direction's route.
 
 use crate::directions::response::{
-    directions_distance::DirectionsDistance, directions_duration::DirectionsDuration,
-    driving_maneuver::DrivingManeuver, polyline::Polyline, transit_details::TransitDetails,
-}; // crate::directions::response
+    directions_distance::DirectionsDistance,
+    directions_duration::DirectionsDuration,
+    driving_maneuver::DrivingManeuver,
+    polyline::Polyline,
+    transit_details::TransitDetails
+};
 use crate::directions::travel_mode::TravelMode;
 use crate::types::LatLng;
 use serde::{Deserialize, Serialize};
 
 // -----------------------------------------------------------------------------
-
+//
 /// Each element in the `steps` array defines a single step of the calculated
 /// directions. A step is the most atomic unit of a direction's route,
 /// containing a single step describing a specific, single instruction on the
@@ -79,5 +82,72 @@ impl Step {
 
     pub fn get_maneuver(&self) -> Option<String> {
         self.maneuver.as_ref().map(String::from)
+    } // fn
+} // impl
+
+// -----------------------------------------------------------------------------
+
+#[cfg(all(feature = "polyline", feature = "geo"))]
+impl Step {
+    /// Attempts to convert a borrowed `&Step` struct to a
+    /// `geo_types::geometry::LineString<f64>` struct.
+    ///
+    /// # Errors
+    ///
+    /// * Returns an error if the polyline is invalid or if the decoded
+    ///   coordinates are out of bounds.
+    fn decode_polyline(
+        &self,
+        precision: u32
+    ) -> Result<geo_types::geometry::LineString<f64>, crate::error::Error> {
+        self.polyline.decode(precision)
+    } // fn
+} // impl
+
+// -----------------------------------------------------------------------------
+
+#[cfg(all(feature = "polyline", feature = "geo"))]
+impl TryFrom<&Step> for geo_types::geometry::LineString<f64> {
+    // Error definitions are contained in the `google_maps\src\error.rs` module.
+    type Error = crate::error::Error;
+
+    /// Attempts to convert a borrowed `&Step` struct to a
+    /// `geo_types::geometry::LineString<f64>` struct.
+    ///
+    /// # Notes
+    ///
+    /// * Uses a hard-coded precision of `5`. For control over the precision,
+    ///   use the `decode_polyline` method on the `Step` struct.
+    ///
+    /// # Errors
+    ///
+    /// * Returns an error if the polyline is invalid or if the decoded
+    ///   coordinates are out of bounds.
+    fn try_from(step: &Step) -> Result<Self, Self::Error> {
+        step.decode_polyline(5)
+    } // fn
+} // impl
+
+// -----------------------------------------------------------------------------
+
+#[cfg(all(feature = "polyline", feature = "geo"))]
+impl TryFrom<Step> for geo_types::geometry::LineString<f64> {
+    // Error definitions are contained in the `google_maps\src\error.rs` module.
+    type Error = crate::error::Error;
+
+    /// Attempts to convert an owned `Step` struct into a
+    /// `geo_types::geometry::LineString<f64>` struct.
+    ///
+    /// # Notes
+    ///
+    /// * Uses a hard-coded precision of `5`. For control over the precision,
+    ///   use the `decode_polyline` method on the `Step` struct.
+    ///
+    /// # Errors
+    ///
+    /// * Returns an error if the polyline is invalid or if the decoded
+    ///   coordinates are out of bounds.
+    fn try_from(step: Step) -> Result<Self, Self::Error> {
+        step.decode_polyline(5)
     } // fn
 } // impl

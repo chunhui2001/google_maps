@@ -25,26 +25,27 @@ impl<'a> ForwardRequest<'a> {
     /// * `Component::Route` matches the long or short name of a route.
     ///
     /// * `Component::Locality` matches against `locality` and `sublocality`
-    /// types.
+    ///   types.
     ///
     /// * `Component::AdministrativeArea` matches all the `administrative_area`
-    /// levels.
+    ///   levels.
     ///
     /// Notes about component filtering:
     ///
     /// * If the request contains multiple component filters, the API evaluates
-    /// them as an AND, not an OR. For example, if the request includes multiple
-    /// countries `components=country:GB|country:AU`, the API looks for
-    /// locations where country=GB AND country=AU, and returns `ZERO_RESULTS`.
+    ///   them as an AND, not an OR. For example, if the request includes
+    ///   multiple countries `components=country:GB|country:AU`, the API looks
+    ///   for locations where country=GB AND country=AU, and returns
+    ///   `ZERO_RESULTS`.
     ///
     /// * Results are consistent with Google Maps, which occasionally yields
-    /// unexpected `ZERO_RESULTS` responses. Using Place Autocomplete may
-    /// provide better results in some use cases. To learn more, see [this
-    /// FAQ](https://developers.google.com/maps/documentation/geocoding/faq#trbl_component_filtering).
+    ///   unexpected `ZERO_RESULTS` responses. Using Place Autocomplete may
+    ///   provide better results in some use cases. To learn more, see [this
+    ///   FAQ](https://developers.google.com/maps/documentation/geocoding/faq#trbl_component_filtering).
     ///
     /// * For each address component, either specify it in the `address`
-    /// parameter or in a `components` filter, but not both. Specifying the same
-    /// values in both may result in `ZERO_RESULTS`.
+    ///   parameter or in a `components` filter, but not both. Specifying the
+    ///   same values in both may result in `ZERO_RESULTS`.
     ///
     /// ## Examples:
     ///
@@ -55,16 +56,19 @@ impl<'a> ForwardRequest<'a> {
     /// ```
     ///
     /// * Multiple component filters may be stacked together. This example
-    /// restricts results to a street in a city:
+    ///   restricts results to a street in a city:
     ///
     /// ```rust
     /// .with_component(GeocodingComponent::Route(String::from("Downing Street")))
     /// .with_component(GeocodingComponent::Locality(String::from("London")))
     /// ```
 
-    pub fn with_component(&'a mut self, component: Component) -> &'a mut Self {
+    pub fn with_component(
+        &'a mut self,
+        component: impl Into<Component>
+    ) -> &'a mut Self {
         // Add component to ForwardRequest struct.
-        self.components = vec![component];
+        self.components = vec![component.into()];
         // Return modified ForwardRequest struct to caller.
         self
     } // fn
@@ -75,8 +79,8 @@ impl<'a> ForwardRequest<'a> {
     /// # Example:
     ///
     /// * Alternatively, multiple component filters may be passed in a single
-    /// method call by passing a slice. This example restricts results to a
-    /// street in a city:
+    ///   method call by passing a slice. This example restricts results to a
+    ///   street in a city:
     ///
     /// ```rust
     /// .with_components(&[
@@ -94,7 +98,7 @@ impl<'a> ForwardRequest<'a> {
 
     pub fn with_components<C, O>(
         &'a mut self,
-        components: C,
+        components: C
     ) -> &'a mut Self
     where
         C: IntoIterator<Item = O>,

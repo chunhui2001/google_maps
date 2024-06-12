@@ -10,14 +10,14 @@ impl<'a> Request<'a> {
     /// ## Arguments
     ///
     /// * `path` ‧ Defines a path on the earth for which to return elevation
-    /// data. This parameter defines a set of two or more ordered
-    /// latitude/longitude pairs defining a path along the surface of the earth.
-    /// For more information, see [Specifying
-    /// Paths](https://developers.google.com/maps/documentation/elevation/intro#Paths).
+    ///   data. This parameter defines a set of two or more ordered
+    ///   latitude/longitude pairs defining a path along the surface of the
+    ///   earth. For more information, see [Specifying
+    ///   Paths](https://developers.google.com/maps/documentation/elevation/intro#Paths).
     ///
     /// * `samples` ‧ Specifies the number of sample points along a path for
-    /// which to return elevation data. The samples parameter divides the given
-    /// path into an ordered set of equidistant points along the path.
+    ///   which to return elevation data. The samples parameter divides the
+    ///   given path into an ordered set of equidistant points along the path.
     ///
     /// ## Examples:
     ///
@@ -47,7 +47,7 @@ impl<'a> Request<'a> {
     pub fn for_sampled_path_request(
         &'a mut self,
         path: impl Into<Locations>,
-        samples: impl Into<u8>,
+        samples: impl Into<u8>
     ) -> &'a mut Self {
         let path: Locations = path.into();
         let samples: u8 = samples.into();
@@ -71,8 +71,8 @@ impl<'a> Request<'a> {
     /// ## Arguments
     ///
     /// * `line_string` ‧ Specifies the sample points along a path for which to
-    /// return elevation data. The samples parameter divides the given path into
-    /// an ordered set of equidistant points along the path.
+    ///   return elevation data. The samples parameter divides the given path
+    ///   into an ordered set of equidistant points along the path.
 
     #[cfg(feature = "geo")]
     #[deprecated(since = "3.5.1", note =
@@ -82,7 +82,7 @@ impl<'a> Request<'a> {
     )]
     pub fn for_line_string_request(
         &'a mut self,
-        line_string: geo_types::LineString,
+        line_string: geo_types::LineString
     ) -> Result<&'a mut Self, crate::error::Error> {
         // Set the path in Request struct.
         self.locations = Some(Locations::LineString(line_string));

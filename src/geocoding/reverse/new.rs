@@ -15,7 +15,7 @@ impl<'a> ReverseRequest<'a> {
     /// * `client` ‧ Your application's Google Maps API client struct.
     ///
     /// * `latlng` ‧ The latitude and longitude values specifying the location
-    /// for which you wish to obtain the closest, human-readable address.
+    ///   for which you wish to obtain the closest, human-readable address.
 
     #[must_use]
     pub const fn new(client: &'a GoogleMapsClient, latlng: LatLng) -> Self {
@@ -46,12 +46,12 @@ impl<'a> ReverseRequest<'a> {
     ///
     /// * `client` ‧ Your application's Google Maps API client struct.
     /// * `coordinate` ‧ The `Coord` specifying the location for which you
-    /// wish to obtain the closest, human-readable address.
+    ///   wish to obtain the closest, human-readable address.
 
     #[cfg(feature = "geo")]
     pub fn try_new_coordinate(
         client: &'a GoogleMapsClient,
-        coordinate: &geo_types::Coord,
+        coordinate: &geo_types::Coord
     ) -> Result<Self, crate::error::Error> {
         // Instantiate struct and return it to caller:
         Ok(ReverseRequest {
@@ -80,12 +80,12 @@ impl<'a> ReverseRequest<'a> {
     ///
     /// * `client` ‧ Your application's Google Maps API client struct.
     /// * `point` ‧ The `Point` specifying the location for which you wish to
-    /// obtain the closest, human-readable address.
+    ///   obtain the closest, human-readable address.
 
     #[cfg(feature = "geo")]
     pub fn try_new_point(
         client: &'a GoogleMapsClient,
-        point: &geo_types::Point,
+        point: &geo_types::Point
     ) -> Result<Self, crate::error::Error> {
         // Instantiate struct and return it to caller:
         Ok(ReverseRequest {

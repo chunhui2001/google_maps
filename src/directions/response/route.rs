@@ -1,14 +1,16 @@
 //! A single route containing a set of legs.
 
 use crate::directions::response::{
-    leg::Leg, overview_polyline::OverviewPolyline, transit_fare::TransitFare,
-}; // crate::directions::response
+    leg::Leg,
+    overview_polyline::OverviewPolyline,
+    transit_fare::TransitFare
+};
 use crate::types::Bounds;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 // -----------------------------------------------------------------------------
-
+//
 /// A single route containing a set of legs in a
 /// [Response](https://developers.google.com/maps/documentation/javascript/reference/directions#DirectionsResult).
 /// Note that though this object is "JSON-like," it is not strictly JSON, as it
@@ -29,6 +31,7 @@ pub struct Route {
     /// waypoint or destination specified. So a route with no stopover waypoints
     /// will contain one `Leg` and a route with one stopover waypoint will
     /// contain two.
+    #[serde(default)]
     pub legs: Vec<Leg>,
     /// An [encoded polyline representation](https://developers.google.com/maps/documentation/utilities/polylinealgorithm)
     /// of the route. This polyline is an approximate (smoothed) path of the
@@ -42,6 +45,7 @@ pub struct Route {
     pub summary: String,
     /// Contains an array of warnings to be displayed when showing these
     /// directions. You must handle and display these warnings yourself.
+    #[serde(default)]
     pub warnings: Vec<String>,
     /// If `optimizeWaypoints` was set to `true`, this field will contain the
     /// re-ordered permutation of the input waypoints. For example, if the input
@@ -63,6 +67,7 @@ pub struct Route {
     /// If any of the input waypoints has `stopover` set to `false`, this field
     /// will be empty, since route optimization is not available for such
     /// queries.
+    #[serde(default)]
     pub waypoint_order: Vec<u8>,
 } // struct
 
@@ -162,5 +167,72 @@ impl Route {
                     .join("|"),
             )
         } // if
+    } // fn
+} // impl
+
+// -----------------------------------------------------------------------------
+
+#[cfg(all(feature = "polyline", feature = "geo"))]
+impl Route {
+    /// Attempts to convert a borrowed `&Route` struct to a
+    /// `geo_types::geometry::LineString<f64>` struct.
+    ///
+    /// # Errors
+    ///
+    /// * Returns an error if the polyline is invalid or if the decoded
+    ///   coordinates are out of bounds.
+    fn decode_polyline(
+        &self,
+        precision: u32
+    ) -> Result<geo_types::geometry::LineString<f64>, crate::error::Error> {
+        self.overview_polyline.decode(precision)
+    } // fn
+} // impl
+
+// -----------------------------------------------------------------------------
+
+#[cfg(all(feature = "polyline", feature = "geo"))]
+impl TryFrom<&Route> for geo_types::geometry::LineString<f64> {
+    // Error definitions are contained in the `google_maps\src\error.rs` module.
+    type Error = crate::error::Error;
+
+    /// Attempts to convert a borrowed `&Route` struct to a
+    /// `geo_types::geometry::LineString<f64>` struct.
+    ///
+    /// # Notes
+    ///
+    /// * Uses a hard-coded precision of `5`. For control over the precision,
+    ///   use the `decode_polyline` method on the `Route` struct.
+    ///
+    /// # Errors
+    ///
+    /// * Returns an error if the polyline is invalid or if the decoded
+    ///   coordinates are out of bounds.
+    fn try_from(route: &Route) -> Result<Self, Self::Error> {
+        route.decode_polyline(5)
+    } // fn
+} // impl
+
+// -----------------------------------------------------------------------------
+
+#[cfg(all(feature = "polyline", feature = "geo"))]
+impl TryFrom<Route> for geo_types::geometry::LineString<f64> {
+    // Error definitions are contained in the `google_maps\src\error.rs` module.
+    type Error = crate::error::Error;
+
+    /// Attempts to convert an owned `Route` struct into a
+    /// `geo_types::geometry::LineString<f64>` struct.
+    ///
+    /// # Notes
+    ///
+    /// * Uses a hard-coded precision of `5`. For control over the precision,
+    ///   use the `decode_polyline` method on the `Route` struct.
+    ///
+    /// # Errors
+    ///
+    /// * Returns an error if the polyline is invalid or if the decoded
+    ///   coordinates are out of bounds.
+    fn try_from(route: Route) -> Result<Self, Self::Error> {
+        route.decode_polyline(5)
     } // fn
 } // impl

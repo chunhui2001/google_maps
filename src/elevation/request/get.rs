@@ -18,7 +18,7 @@ impl<'a> ElevationRequest<'a> {
     ///
     /// This method accepts no arguments.
 
-    #[tracing::instrument(level = "debug", name = "google_maps.elevation", skip(self))]
+    #[tracing::instrument(level = "info", skip(self))]
     pub async fn get(&mut self) -> Result<ElevationResponse, GoogleMapsError> {
         // Build the URL stem for the HTTP get request:
         let mut url = format!("{SERVICE_URL}/{OUTPUT_FORMAT}?");
@@ -31,13 +31,14 @@ impl<'a> ElevationRequest<'a> {
         } // match
 
         // Observe any rate limiting before executing request:
+        tracing::info!("making HTTP GET request to Google Maps Elevation API");
+
         self.client
             .rate_limit
             .limit_apis(vec![&Api::All, &Api::Elevation])
             .await;
 
-        // Emit debug message so client can monitor activity:
-        tracing::debug!("Making HTTP GET request to Google Maps Elevation API: `{url}`");
+        tracing::debug!("{url}");
 
         // Retries the get request until successful, an error ineligible for
         // retries is returned, or we have reached the maximum retries. Note:

@@ -9,8 +9,8 @@ impl<'a> ForwardRequest<'a> {
     /// ## Arguments
     ///
     /// * `bounds` - The bounding box of the viewport within which to bias
-    /// geocode results more prominently. This parameter will only influence,
-    /// not fully restrict, results from the geocoder.
+    ///   geocode results more prominently. This parameter will only influence,
+    ///   not fully restrict, results from the geocoder.
     ///
     /// ## Description
     ///
@@ -43,7 +43,7 @@ impl<'a> ForwardRequest<'a> {
 
     pub fn with_bounds(
         &'a mut self,
-        bounds: impl Into<Bounds>,
+        bounds: impl Into<Bounds>
     ) -> &'a mut Self {
         // Set bounds in ForwardRequest struct.
         self.bounds = Some(bounds.into());
